@@ -1,0 +1,82 @@
+﻿<Window x:Class="FileManagerApp.View.FolderDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:components="clr-namespace:FileManagerApp.Component"
+        xmlns:viewmodel="clr-namespace:FileManagerApp.ViewModel" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
+        xmlns:local="clr-namespace:FileManagerApp.View"
+        Width="260"
+        Height="260"
+        mc:Ignorable="d">
+
+    <Window.DataContext>
+            <viewmodel:MainViewModel/>
+        </Window.DataContext>
+    <DockPanel >
+        <TextBlock VerticalAlignment="Center" Margin="10 0 10 0" DockPanel.Dock="Top" Height="30" FontSize="9">
+          select the place where you want to copy 'New Folder',<LineBreak /> then click  the copy button
+        </TextBlock>
+        <ListView  Margin="10 5 10 5" DockPanel.Dock="Top" Background="AliceBlue" Height="150">
+            <TreeView 
+            Grid.Row="3" 
+            x:Name="treeView"
+            VerticalAlignment="Top" 
+            BorderThickness="0 1 1 0"
+            BorderBrush="AliceBlue"
+            HorizontalAlignment="Center" 
+            Height="auto" 
+            Width="229"
+            ItemsSource="{Binding DirectoryTrees,UpdateSourceTrigger=PropertyChanged}"
+            Grid.RowSpan="2" Background="White">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type components:DirectoryTree}" 
+                                          ItemsSource="{Binding Directories}">
+                        <StackPanel Orientation="Horizontal" Height="30">
+                            <Image Source="{Binding ImageSource}" />
+                            <TextBlock Text="{Binding Title}" 
+                                   Margin="5 0 0 0"
+                                   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type io:DirectoryInfo}">
+                        <StackPanel Orientation="Horizontal" Height="30">
+                            <Image Source="/Asset/icons8-folder-48.png" />
+                            <TextBlock Text="{Binding Name}"
+                                   Margin="5 0 0 0"
+                                   VerticalAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction 
+                        Command="{Binding OnItemClicked}"
+                        CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TreeView>
+        </ListView>
+        <StackPanel  Margin="10 0 10 0" Orientation="Horizontal" DockPanel.Dock="Top" >
+            <Label Margin="3 0 3 0" FontSize="9"> Folder :</Label>
+            <TextBox Width="170" Margin="5 2 5 2 " BorderThickness="1" BorderBrush="SkyBlue"></TextBox>
+            
+        </StackPanel>
+        <StackPanel  Margin="10 0 10 0" Orientation="Horizontal" Height="30" DockPanel.Dock="Bottom" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button  Grid.Column="0" FontSize="9" Content="Make New Folder" Width="80"  Margin=" 20 4 10 4" BorderThickness="1"></Button>
+                <Button  Grid.Column="1" FontSize="9" Content="Copy" Width="40" Margin=" 15 4 10 4" BorderThickness="1" ></Button>
+                <Button  Grid.Column="2" FontSize="9" Content="Cancel" Width="40" Margin=" 20 4 25 4" BorderThickness="1" ></Button>
+            </Grid>
+            
+        </StackPanel>
+        
+    </DockPanel>
+</Window>
